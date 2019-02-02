@@ -9,6 +9,7 @@ cops_mailer_mail_domain: "antispam.{{ cops_mailer_tld_domain }}"
 cops_mailer_hostname: "mx.{{cops_mailer_mail_domain}}"
 cops_mailer_ourdomains_default: "({{cops_mailer_mail_domain}}|{{cops_mailer_tld_domain}}|{{cops_mailer_hostname}})"
 cops_mailer_ourdomains: "{{cops_mailer_ourdomains_default}}"
+cops_mailer_rspamdourdomains: "{{cops_mailer_ourdomains_default}}"
 cops_mailer_alternate_hostnames: [".{{cops_mailer_tld_domain}}"]
 cops_mailer_db_password: "secret4gzQNe3c8851VOJ"
 cops_mailer_db_name: "{{cops_mailer_name}}"
@@ -32,6 +33,7 @@ cops_mailer_sshargs: >-
 cops_mailer_build: false
 cops_mailer_pull: true
 cops_mailer_registries: []
+cops_mailer_rspamd_password: mailu
 #- {registry: registry.foo.net, username: foo, password: bar}
 cops_mailer_compose_files: [docker-compose.yml, docker-compose-prod.yml, docker-compose-prod-overrides.yml]
 cops_mailer_dc:
@@ -65,6 +67,7 @@ cops_mailer_docker_env_defaults: |-
   # PUBLIC_IPV4= 127.0.0.1 (default: 127.0.0.1)
   # PUBLIC_IPV6= ::1 (default: ::1)
   # Subnet of the docker network. This should not conflict with any networks to which your system is connected. (Internal and external!)
+  RSPAMD_PASSWORD={{cops_mailer_rspamd_password}}
   SUBNET={{cops_mailer_subnetp}}
   OUTIP={{cops_mailer_out_ip}}
   # Main mail domain
