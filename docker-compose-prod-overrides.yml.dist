@@ -1,0 +1,40 @@
+version: '3.6'
+x-services:
+  dns: &dns
+    dns: [192.168.20.254]
+services:
+  redis:
+    <<: [ *dns ]
+  antispam-redis:
+    <<: [ *dns ]
+  front:
+    <<: [ *dns ]
+    ports:
+    - "91.1.2.3:25:25"
+    - "91.1.2.3:110:110"
+    - "91.1.2.3:143:143"
+    - "91.1.2.3:443:443"
+    - "91.1.2.3:465:465"
+    - "91.1.2.3:587:587"
+    - "91.1.2.3:993:993"
+    - "91.1.2.3:995:995"
+  resolver:
+    networks: {default: {ipv4_address: "192.168.20.254}}"}
+  admin:
+    <<: [ *dns ]
+  imap:
+    <<: [ *dns ]
+  smtp-configure-source-ip:
+    <<: [ *dns ]
+  smtp:
+    <<: [ *dns ]
+  antispam: &antispam
+    <<: [ *dns ]
+  antispam-feeder:
+    <<: [ *antispam ]
+  antivirus:
+    <<: [ *dns ]
+  webmail:
+    <<: [ *dns ]
+networks: {default: {ipam: {config: [{subnet: "192.168.20.0/24"}]}}}
+# vim: set ft=yaml:

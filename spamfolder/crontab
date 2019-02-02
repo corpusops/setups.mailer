@@ -1,0 +1,1 @@
+{{ .Env.SPAMLEARN_PERIODICITY | default "* */1 * * *" }} sh -c '/spamfolder/spamlearn.sh 2>&1|tee -a /var/log/cron.log'

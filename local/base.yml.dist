@@ -1,0 +1,40 @@
+cops_mailer_spamcollect_user: spamuser
+cops_mailer_spamcollect_host: mail.mydomain.com
+cops_mailer_db_password: "sqdfqsd23f1qsd5489
+cops_mailer_secret_key: qsdfqdsf12415465
+cops_mailer_out_ips: ["91.1.2.3"]
+cops_mailer_rspamd_lua_whitelisted:
+- "/@mysuperclient.com/im{all_header}"
+cops_mailer_postfix_virtual_alias_map: |-
+  /.*@.local/                            sysadmin+mydomain.com@mydomain.com
+  /.*@localhost/                         sysadmin+mydomain.com@mydomain.com
+  /root@preprod.*.mydomain.net/     sysadmin+preprodscatchall@mydomain.com
+  /sysadmin@preprod.*.mydomain.net/ sysadmin+preprodscatchall@mydomain.com
+  /sysadmin@staging.*.mydomain.net/ sysadmin+preprodscatchall@mydomain.com
+  /www-data@mydomain.net/           sysadmin+preprodscatchall@mydomain.com
+  /admin@example.com/                    sysadmin+preprodscatchall@mydomain.com
+cops_mailer_postfix_sender_transport_map: |-
+  /.*mydomain\.com.*/                   smtp:
+  /.*mydomain\.(eu|fr|net|org).*/                           delayed_smtp:
+cops_mailer_postfix_transport_map: |-
+  /.*antispam\.mydomain\.(net|fr|org|eu|com).*/  lmtp:inet:{{'{{'}} .Env.HOST_LMTP }}
+  /.*(google|gmail).*/                   delayed_smtp:
+  # /.*antispam\.mydomain\.(net|fr|org|eu|com).*/             virtual:
+  /.*lists\.mydomain\.(net|fr|org|eu|com).*/                relay:[lists.mydomain.com]
+  /.*mydomain.(net|fr|org|eu|com).*/                        relay:[mail.mydomain.com]
+cops_mailer_postfix_relay_domains_map: |-
+  lists.mydomain.com  OK
+  lists.mydomain.net  OK
+  other.mydomain.net  OK
+cops_mailer_postfix_recipient_canonical_map: |-
+  @a.mydomain.com  sysadmin@mydomain.com
+cops_mailer_postfix_recipient_access_map: |-
+  #/.*internalmy.domain.*/                        smtpd_restrictive
+  /.*/                                            permissive
+cops_mailer_postfix_mynetworks_map: |-
+  # mail infrastructure whitelist (this server & bluemind servers)
+  127.0.0.0/8     OK  # localhost
+  1.2.3.4   OK  # test from kiorky's home
+cops_mailer_postfix_blackout_map: |-
+  /(myapp.mydomain.net)/        reject
+  /.*/                                        ok

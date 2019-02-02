@@ -1,0 +1,16 @@
+/var/log/messages
+/var/log/mail.log {
+       # daily
+       rotate {{'{{'}}.Env.MAILLOGS_KEEP}}
+       size {{'{{'}}.Env.MAILLOGSIZE}}
+       copytruncate
+       nodateext
+       delaycompress
+       compress
+       notifempty
+       missingok
+       postrotate
+           /usr/sbin/postfix reload
+       endscript
+       su root adm
+}

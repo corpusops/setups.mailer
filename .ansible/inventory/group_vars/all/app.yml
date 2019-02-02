@@ -1,0 +1,5 @@
+---
+mailer_servers: mailer_servers
+cops_mailer_name: "mailer"
+cops_mailer_docker_env_extra: |-
+  # db

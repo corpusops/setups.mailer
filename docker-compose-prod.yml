@@ -1,0 +1,138 @@
+# Core services
+version: '3.6'
+x-services:
+  logging-opts: &logging-opts
+    logging:
+      driver: "json-file"
+      options: {max-size: 100m, max-file: "70"}
+  env: &env
+    env_file: [docker.env]
+services:
+  redis:
+    <<: [ *env ]
+    volumes:
+    - "redis:/data"
+  antispam-redis:
+    <<: [ *env ]
+    volumes:
+    - "antispam-redis:/data"
+  front:
+    <<: [ *logging-opts, *env ]
+    # in overrides
+    ports: []
+    volumes:
+    - "certs:/certs"
+    - "./overrides/nginx:/overrides"
+  resolver:
+    <<: [ *env ]
+  admin:
+    <<: [ *env ]
+    volumes:
+    - "admin:/data"
+    - "psql-db:/data/psql_db"
+    - "psql-backup:/data/psql_backup"
+    - "dkim:/dkim"
+  imap:
+    <<: [ *logging-opts, *env ]
+    volumes:
+    - "mail:/mail"
+    - "./overrides:/overrides"
+  smtp-configure-source-ip:
+    <<: [ *env, *logging-opts ]
+    image: corpusops/ms_iptables
+    command: /bin/supervisord.sh
+    volumes:
+    - "./overrides/source_ip/:/source_ip:ro"
+    environment:
+    - SUPERVISORD_CONFIGS=/source_ip/supervisor
+    cap_add: [NET_ADMIN]
+    network_mode: "host"
+  smtp:
+    <<: [ *logging-opts, *env ]
+    depends_on: [front, resolver, smtp-configure-source-ip]
+    command:
+    - sh
+    - "-c"
+    - >-
+      :
+      && if [ -e /etc/logrotate.d/rsyslog ];then rm /etc/logrotate.d/rsyslog;fi
+      && frep /cnf/mail.logrotate:/etc/logrotate.d/mail --overwrite
+      && chmod 0600 /etc/logrotate.d/mail
+      && chown root:root /etc/logrotate.d/mail
+      && if [ ! -e /etc/postfix/overrides ];then
+         mkdir /etc/postfix/overrides
+      fi
+      && find /overrides -type f | while read f;do
+        frep --overwrite "$$f:/etc/postfix/overrides/$$(basename $$f)";
+      done
+      && exec /start.py
+    environment:
+      HOST_ANTISPAM: antispam:11332
+      HOST_LMTP: imap:2525
+    volumes:
+    - "./overrides/:/cnf"
+    - "./overrides/postfix:/overrides"
+    - "./overrides/postfix-conf:/conf"
+    - "queue:/queue"
+    - "smtplogs:/var/log"
+  antispam: &antispam
+    <<: [ *env ]
+    command:
+    - sh
+    - "-xec"
+    - |-
+      :
+      cd /o/rspamd
+      find -type f | while read f;do
+        echo "template: $$f"
+        if ( echo $$f | grep -q local.d/ );then
+          frep --overwrite "$$f:/conf/$$(basename $$f)"
+        fi
+        frep --overwrite "$$f:/etc/rspamd/$$f"
+      done
+      cd - && exec /start.py
+    volumes:
+    - "./overrides/rspamd:/o/rspamd"
+    - "filter:/var/lib/rspamd"
+    - "dkim:/dkim"
+    - "./spamfolder/:/spamfolder"
+    - "/root/.ssh:/root/.ssh:ro"
+  antispam-feeder:
+    <<: [ *antispam ]
+    environment:
+    - SUPERVISORD_CONFIGS=/etc/supervisor.d/cron /etc/supervisor.d/rsyslog
+    command:
+    - /bin/sh
+    - "-c"
+    - >-
+      cat /spamfolder/crontab | frep - >> /etc/crontabs/root
+      && chmod 0700 /etc/crontabs/*
+      && exec /bin/supervisord.sh
+  antivirus:
+    <<: [ *env ]
+    volumes:
+    - "filter:/data"
+  # Webmail
+  webmail:
+    <<: [ *env ]
+    volumes:
+    - "webmail:/data"
+  database:
+    <<: [ *env ]
+    volumes:
+    - "psql-db:/data"
+    - "psql-backup:/backup"
+volumes:
+  admin:
+  antispam-redis:
+  certs:
+  dkim:
+  filter:
+  mail:
+  msiptables:
+  psql-backup:
+  psql-db:
+  queue:
+  redis:
+  smtplogs:
+  webmail:

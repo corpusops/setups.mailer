@@ -1,0 +1,58 @@
+version: '3.6'
+x-services:
+  dns: &dns
+    dns: ["{{cops_mailer_subnet_prefix}}.254"]
+services:
+  redis:
+    <<: [ *dns ]
+  antispam-redis:
+    <<: [ *dns ]
+  front:
+    <<: [ *dns ]
+    ports:
+    {% if not cops_mailer_out_ips %}
+    - "25:25"
+    - "110:110"
+    - "143:143"
+    - "80:80"
+    - "443:443"
+    - "465:465"
+    - "587:587"
+    - "993:993"
+    - "995:995"
+    {% else %}
+    {% for i in cops_mailer_out_ips %}
+    - "{{i}}:80:80"
+    - "{{i}}:443:443"
+    - "{{i}}:25:25"
+    - "{{i}}:110:110"
+    - "{{i}}:143:143"
+    - "{{i}}:465:465"
+    - "{{i}}:587:587"
+    - "{{i}}:993:993"
+    - "{{i}}:995:995"
+    {% endfor %}
+    {% endif %}
+  resolver:
+    networks: {default: {ipv4_address: "{{cops_mailer_subnet_prefix}}.254"}}
+  admin:
+    <<: [ *dns ]
+  imap:
+    <<: [ *dns ]
+  smtp-configure-source-ip:
+    <<: [ *dns ]
+  smtp:
+    <<: [ *dns ]
+  antispam: &antispam
+    <<: [ *dns ]
+  antispam-feeder:
+    <<: [ *antispam ]
+  antivirus:
+    <<: [ *dns ]
+  webmail:
+    <<: [ *dns ]
+networks:
+  default:
+    ipam:
+      config:
+      - subnet: "{{cops_mailer_subnetp}}"

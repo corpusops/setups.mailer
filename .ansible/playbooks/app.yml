@@ -1,0 +1,12 @@
+---
+# APP
+- hosts: "{{mailer_servers|default('all')}}"
+  roles: [corpusops.roles/ansible_plugins]
+  tasks:
+  - when: ["cops_mailer_lifecycle_app|default(true)"]
+    tags: ["cops_mailer_lifecycle_app"]
+    include_role: {name: mailer_vars, allow_duplicates: false}
+  - when: ["cops_mailer_lifecycle_app"]
+    tags: ["cops_mailer_lifecycle_app"]
+    block:
+    - include_role: {name: mailer,    allow_duplicates: false}
