@@ -269,6 +269,7 @@ cops_mailer_postfix_smtp_header_checks_map: |-
 cops_mailer_postmaster: "postmaster@{{cops_mailer_tld_domain}}"
 cops_mailer_postfix_milter_header_checks_map: |-
   /^X-Spam(-flag)?:\s+(Yes|y|1)/i BCC {{cops_mailer_postmaster}}
+  {{cops_mailer_postfix_header_checks_map}}
 cops_mailer_postfix_header_checks_map: |-
   {{cops_mailer_postfix_smtp_header_checks_map}}
   if !/(to|cc|bcc):.*@({{cops_mailer_ourdomains}})/
@@ -279,11 +280,13 @@ cops_mailer_postfix_header_checks_map: |-
   /^\s*X-Enigmail:/                    IGNORE
   /^\s*X-Mailer:/                      IGNORE
   /^\s*X-Pgp-Agent:/                   IGNORE
+  /^\s*X-Rspamd-Server:/               IGNORE
+  /^\s*X-Rspamd-Queue-Id:/             IGNORE
+  /^\s*X-Spamd-Result:/                IGNORE
   /^\s*(Mime-Version:\s*[0-9\.]+)\s.+/ REPLACE $1
   endif
 cops_mailer_postfix_blackout_map: ""
 cops_mailer_rspamd_testspam_token: "a6F7S2Pk1731rwe"
-
 cops_mailer_rspamd_milter_skip_local: "false"
 cops_mailer_rspamd_milter_skip_authenticated: "false"
 cops_mailer_rspamd_milter_remove_upstream_spam_flag: "true"
