@@ -173,9 +173,9 @@ delayed_smtp_destination_recipient_limit = 1
 ###############
 # Extra Settings
 ###############
-milter_header_checks = regexp:/etc/postfix/overrides/milter_header_checks.regexp
-header_checks = regexp:/etc/postfix/overrides/header_checks.regexp
-smtp_header_checks = regexp:/etc/postfix/overrides/smtp_header_checks.regexp
+milter_header_checks = pcre:/etc/postfix/overrides/milter_header_checks.regexp
+header_checks = pcre:/etc/postfix/overrides/header_checks.regexp
+smtp_header_checks = pcre:/etc/postfix/overrides/smtp_header_checks.regexp
 smtpd_discard_ehlo_keyword_address_maps = cidr:/etc/postfix/overrides/esmtp_access.map
 
 
