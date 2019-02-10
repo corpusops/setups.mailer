@@ -289,7 +289,8 @@ cops_mailer_rspamd_milter_skip_local: "false"
 cops_mailer_rspamd_milter_skip_authenticated: "false"
 cops_mailer_rspamd_milter_remove_upstream_spam_flag: "true"
 cops_mailer_rspamd_milter_extended_headers_rcpt: ''
-cops_mailer_rspamd_milter_use: '["x-spamd-bar", "x-spam-level", "x-virus"]'
+cops_mailer_rspamd_milter_use: '[]'
+# cops_mailer_rspamd_milter_use: '["x-spamd-bar", "x-spam-level", "x-virus"]'
 cops_mailer_rspamd_milter_extended_spam_headers: 'false'
 cops_mailer_rspamd_milter_authenticated_headers: "{{cops_mailer_rspamd_milter_use}}"
 cops_mailer_rspamd_milter_local_headers: "{{cops_mailer_rspamd_milter_use}}"
