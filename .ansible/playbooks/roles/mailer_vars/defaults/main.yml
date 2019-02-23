@@ -207,7 +207,7 @@ cops_mailer_spamcollect_script: /root/spamcollect.sh
 cops_mailer_maillogs_keep: 700
 cops_mailer_spamlearn_minutes: "{{60*48}}"
 cops_mailer_spamlearn_periodicity: "* */1 * * *"
-cops_mailer_maillogsize: 5242880000
+cops_mailer_maillogsize: 5242880
 cops_mailer_spamcollect_user: spamcollect
 cops_mailer_spamcollect_path: /data/spamcollect
 cops_mailer_spamcollect_host: mail.mydomain.com
