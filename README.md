@@ -7,8 +7,6 @@
 
 All following commands must be run only once at project installation.
 
-## Support development
-- [paypal](https://paypal.me/kiorky)
 
 
 ## First clone
