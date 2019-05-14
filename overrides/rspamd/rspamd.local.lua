@@ -2,6 +2,21 @@ local rspamd_regexp = require "rspamd_regexp";
 local log = require "rspamd_logger";
 local reconf = config['regexp'];
 local group = "custom";
+
+{% if cops_mailer_rspamd_lua_blacklisted %}
+local blacklistedsenders = {
+    {% for i in cops_mailer_rspamd_lua_blacklisted%}
+    "{{i}}",
+    {% endfor %}
+};
+reconf['BLACKLIST_CUSTOMERS'] = {
+  re = string.format("(%s)", table.concat(blacklistedsenders, ") | (")),
+  group = group,
+  description = "not authorized senders",
+  score = 30000.0,
+}
+{% endif %}
+
 {% if cops_mailer_rspamd_lua_whitelisted %}
 local whitelistedsenders = {
     {% for i in cops_mailer_rspamd_lua_whitelisted%}

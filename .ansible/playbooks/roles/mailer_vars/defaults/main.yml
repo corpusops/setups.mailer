@@ -252,6 +252,8 @@ cops_mailer_rspamd_greylist_actions:
 cops_mailer_rspamd_greylist_enable: "false"
 cops_mailer_rspamd_regex_maxsize: "100000000"
 cops_mailer_rspamd_lua_custom: ""
+cops_mailer_rspamd_lua_blacklisted:
+- "/@supezrfoorbarblack123879.com/im{all_header}"
 cops_mailer_rspamd_lua_whitelisted:
 - "/@supezrfoorbar123879.com/im{all_header}"
 cops_mailer_postfix_virtual_alias_map: ""
@@ -281,9 +283,14 @@ cops_mailer_postfix_smtp_header_checks_map: |-
   /^\s*x-pgp-agent:/                   IGNORE
   /^\s*(mime-version:\s*[0-9\.]+)\s.+/ REPLACE $1
 cops_mailer_postmaster: "postmaster@{{cops_mailer_tld_domain}}"
-cops_mailer_postfix_milter_header_checks_map: |-
+cops_mailer_postfix_milter_header_checks_map_extra: ""
+cops_mailer_postfix_milter_header_checks_map_default: |-
   /^X-Outgoing-Spam:\s+(yes|y|1)/ REDIRECT {{cops_mailer_postmaster.replace('@', '+outspam@')}}
   /^x-spam(-flag)?:\s+(yes|y|1)/ BCC {{cops_mailer_postmaster}}
+  /^x-cops-stopbounce:\s+(yes|y|1)/  REDIRECT {{cops_mailer_postmaster.replace('@', '+stopbounce@')}}
+cops_mailer_postfix_milter_header_checks_map: |-
+  {{cops_mailer_postfix_milter_header_checks_map_default}}
+  {{cops_mailer_postfix_milter_header_checks_map_extra}}
   {{cops_mailer_postfix_header_checks_map}}
 cops_mailer_postfix_header_checks_map: |-
   {{cops_mailer_postfix_smtp_header_checks_map}}
