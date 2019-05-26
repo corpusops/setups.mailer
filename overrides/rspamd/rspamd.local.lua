@@ -2,7 +2,21 @@ local rspamd_regexp = require "rspamd_regexp";
 local log = require "rspamd_logger";
 local reconf = config['regexp'];
 local group = "custom";
-
+local is_bm_event = rspamd_regexp.create_cached(bmevent_re);
+--
+rspamd_config.WHITELIST_BMEVENT = {
+  callback = function(task)
+    local mh = tostring(task:get_raw_headers());
+    local mc = tostring(task:get_content())
+    local is_a_bmevent = is_bm_event:match(mh) or is_bm_event:match(mc);
+    return is_a_bmevent;
+  end,
+  group = group,
+  description = "authorized bm events outputs2",
+  type = 'prefilter',
+  score = -40.0,
+}
+--
 {% if cops_mailer_rspamd_lua_blacklisted %}
 local blacklistedsenders = {
     {% for i in cops_mailer_rspamd_lua_blacklisted%}
@@ -53,19 +67,26 @@ rspamd_config:register_symbol({
     local pr = task:get_principal_recipient();
     local spam_action = task:get_metric_action('default');
     local is_spam = (spam_action ~= 'no action' and action ~= 'greylist')
+    local mc = tostring(task:get_content())
+    local mh = tostring(task:get_raw_headers())
+    local is_a_bmevent = is_bm_event:match(mh) or is_bm_event:match(mc);
     for i, pat in ipairs(cusourdomains) do
       if pat:match(pr) then
         is_domain = true;
         break
       end
     end
-    -- task:set_milter_reply({add_headers = {
-    --   ['X-Cops-OutSpam-isdomain'] = tostring(is_domain),
-    --   ['X-Cops-OutSpam-Spam-pr'] = pr,
-    -- }});
-    if is_spam and not is_domain then
-      task:set_milter_reply({add_headers = {['X-Outgoing-Spam'] = '1'}});
+    aheaders = {
+        ['X-Cops-OutSpam-isdomain'] = tostring(is_domain),
+        ['X-Cops-OutSpam-Spam-pr'] = pr,
+        ['X-Outgoing-SpamH'] = is_bm_event:match(mh),
+        ['X-Outgoing-SpamC'] = is_bm_event:match(mc),
+    };
+    if is_spam and not is_domain and not is_a_bmevent then
+      aheaders['X-Outgoing-Spam'] = '1';
     end
+    task:set_milter_reply({add_headers = aheaders});
+
   end
 });
 --
