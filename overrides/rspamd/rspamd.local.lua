@@ -4,6 +4,15 @@ local reconf = config['regexp'];
 local group = "custom";
 local bmevent_re = "/prodid....bluemind..bluemind calendar/im";
 local is_bm_event = rspamd_regexp.create_cached(bmevent_re);
+local cops_disabled_symbols = {
+{% for i in cops_mailer_rspamd_disabled_symbols %}{{i}},
+{%- endfor %}
+};
+--
+for k, symbol in pairs(cops_disabled_symbols) do
+  rspamd_config:add_condition(symbol, function(task) return false end);
+end
+--
 --
 {% if cops_mailer_rspamd_lua_blacklisted %}
 local blacklistedsenders = {
