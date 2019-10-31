@@ -200,6 +200,8 @@ cops_mailer_docker_env_defaults: |-
   # IMAP full-text search is enabled by default. Set the following variable to off in order to disable the feature.
   FULL_TEXT_SEARCH={{cops_mailer_antispam_imapfulltextsearch}}
   OUTBOUND_TLS_LEVEL={{cops_mailer_smtp_tls_security_level}}
+  DEFER_ON_TLS_ERROR={{cops_mailer_defer_on_tls_error}}
+cops_mailer_defer_on_tls_error: "False"
 cops_mailer_antispam_imapfulltextsearch: "off"
 cops_mailer_message_ratelimit: "100000/hour"
 # set to 1 if you have no spam/ham source to get stuff from
@@ -313,6 +315,8 @@ cops_mailer_postfix_esmtp_access_default: |-
 cops_mailer_sentry_dests: [
 "sysadmin+sentry@{{cops_mailer_tld_domain}}"
 ]
+cops_mailer_postfix_tls_policy_map_default: ""
+cops_mailer_postfix_tls_policy_map: "{{cops_mailer_postfix_tls_policy_map_default}}"
 cops_mailer_postfix_esmtp_access: |-
   {{cops_mailer_postfix_esmtp_access_default}}
 cops_mailer_postfix_smtp_header_checks_map: |-
