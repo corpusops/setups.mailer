@@ -6,7 +6,7 @@ x-services:
       driver: "json-file"
       options: {max-size: 100m, max-file: "70"}
   env: &env
-    env_file: [docker.env]
+    env_file: [.env, docker.env]
 services:
   redis:
     <<: [ *env ]
@@ -29,7 +29,7 @@ services:
     <<: [ *env ]
     volumes:
     - "admin:/data"
-    - "psql-db:/data/psql_db"
+    - "postgres:/data/psql_db"
     - "psql-backup:/data/psql_backup"
     - "dkim:/dkim"
   imap:
@@ -120,8 +120,7 @@ services:
   database:
     <<: [ *env ]
     volumes:
-    - "psql-db:/data"
-    - "psql-backup:/backup"
+    - "postgres:/var/lib/postgresql/data"
 volumes:
   admin:
   antispam-redis:
@@ -130,8 +129,8 @@ volumes:
   filter:
   mail:
   msiptables:
+  postgres:
   psql-backup:
-  psql-db:
   queue:
   redis:
   smtplogs:

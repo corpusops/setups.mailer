@@ -11,6 +11,7 @@ cops_mailer_ourdomains_default: "({{cops_mailer_mail_domain}}|{{cops_mailer_tld_
 cops_mailer_ourdomains: "{{cops_mailer_ourdomains_default}}"
 cops_mailer_rspamdourdomains: "{{cops_mailer_ourdomains_default}}"
 cops_mailer_alternate_hostnames: [".{{cops_mailer_tld_domain}}"]
+cops_mailer_db_user: mailu
 cops_mailer_db_password: "secret4gzQNe3c8851VOJ"
 cops_mailer_db_name: "{{cops_mailer_name}}"
 cops_mailer_build_args: ""
@@ -54,8 +55,6 @@ cops_mailer_docker_env_defaults: |-
   ###################################
   # Common configuration variables
   ###################################
-  MAILU_VERSION={{cops_mailer_mailu_version}}
-  VERSION={{cops_mailer_mailu_version}}
   # Set this to the path where Mailu data and configuration is stored
   # This variable is now set directly in `docker-compose.yml by the setup utility
   # ROOT=/mailu
@@ -69,7 +68,6 @@ cops_mailer_docker_env_defaults: |-
   # Subnet of the docker network. This should not conflict with any networks to which your system is connected. (Internal and external!)
   RSPAMD_PASSWORD={{cops_mailer_rspamd_password}}
   SUBNET={{cops_mailer_subnetp}}
-  OUTIP={{cops_mailer_out_ip}}
   # Main mail domain
   DOMAIN={{cops_mailer_mail_domain}}
   # Hostnames for this server, separated with comas
@@ -165,6 +163,8 @@ cops_mailer_docker_env_defaults: |-
   ###################################
   DB_FLAVOR=postgresql
   DB_PW={{cops_mailer_db_password}}
+  POSTGRES_PASSWORD={{cops_mailer_db_password}}
+  POSTGRES_USER={{cops_mailer_db_user}}
   ###################################
   # Extra settings
   ###################################
@@ -186,7 +186,9 @@ cops_mailer_docker_env_defaults: |-
 cops_mailer_spam_skip_get: ""
 # free form for params inside dockerenv
 cops_mailer_dotenv: |-
-  # nothing
+  OUTIP={{cops_mailer_out_ip}}
+  MAILU_VERSION={{cops_mailer_mailu_version}}
+  VERSION={{cops_mailer_mailu_version}}
 cops_mailer_dotenv_extra: ""
 # free form for params inside dockerenv
 cops_mailer_docker_env_extra: ""
@@ -226,7 +228,7 @@ cops_mailer_webmail: rainloop
 cops_mailer_ratelimit: "100/minute;10000/hour"
 cops_mailer_tls_flavor: "letsencrypt"
 cops_mailer_postmaster: admin
-cops_mailer_mailu_version: "1.6"
+cops_mailer_mailu_version: "1.7"
 cops_mailer_secret_key: supersecret123456789
 cops_mailer_out_ips: ["{{ansible_default_ipv4.address}}"]
 cops_mailer_out_ip: "{{cops_mailer_out_ips[0]}}"
