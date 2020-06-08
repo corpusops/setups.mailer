@@ -71,6 +71,7 @@ services:
         frep --overwrite "$$f:/etc/postfix/overrides/$$(basename $$f)";
       done
       && rsyslogd -v >/dev/null 2>&1 || ( apk update && apk add rsyslog )
+      && cp /conf.d/* /conf
       && echo '*.* @syslog' >> /etc/rsyslog.conf
       && if ! ( grep -q  "rsyslogd -n" /start.py );then
         sed -i -re 's/(os.system\("postfix start-fg"\))/os.system("rsyslogd -n \&");\1/g' /start.py;
@@ -82,7 +83,7 @@ services:
     volumes:
     - "./overrides/:/cnf"
     - "./overrides/postfix:/overrides"
-    - "./overrides/postfix-conf:/conf"
+    - "./overrides/postfix-conf:/conf.d"
     - "queue:/queue"
     - "smtplogs:/var/log"
   antispam: &antispam

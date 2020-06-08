@@ -199,6 +199,7 @@ cops_mailer_docker_env_defaults: |-
   SPAM_SKIP_GET={{cops_mailer_spam_skip_get}}
   # IMAP full-text search is enabled by default. Set the following variable to off in order to disable the feature.
   FULL_TEXT_SEARCH={{cops_mailer_antispam_imapfulltextsearch}}
+  OUTBOUND_TLS_LEVEL={{cops_mailer_smtp_tls_security_level}}
 cops_mailer_antispam_imapfulltextsearch: "off"
 cops_mailer_message_ratelimit: "100000/hour"
 # set to 1 if you have no spam/ham source to get stuff from
@@ -236,6 +237,7 @@ cops_mailer_code_rsync_opts: [
     "--exclude", ".tox",
     "--exclude", ".env",
     "--exclude", "docker.env"]
+cops_mailer_smtp_tls_security_level: may
 cops_mailer_log_level: WARNING
 cops_mailer_spamcollect_script: /root/spamcollect.sh
 cops_mailer_maillogs_keep: 700
@@ -256,7 +258,7 @@ cops_mailer_relayhost: ""
 cops_mailer_webmail: rainloop
 cops_mailer_ratelimit: "100/minute{% if cops_mailer_mailu_version| version_compare('1.7', '<=')%};10000/hour{%endif%}"
 cops_mailer_tls_flavor: "letsencrypt"
-cops_mailer_mailu_version: "1.7"
+cops_mailer_mailu_version: "1.9"
 cops_mailer_secret_key: supersecret123456789
 cops_mailer_out_ips: ["{{ansible_default_ipv4.address}}"]
 cops_mailer_out_ip: "{{cops_mailer_out_ips[0]}}"
