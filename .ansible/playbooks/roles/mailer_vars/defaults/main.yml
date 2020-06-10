@@ -144,7 +144,6 @@ cops_mailer_docker_env_defaults: |-
   # journald (On systemd platforms, useful for Fail2Ban integration)
   # syslog (Non systemd platforms, Fail2Ban integration. Disables `docker-compose log` for front!)
   # LOG_DRIVER=json-file
-
   # Docker-compose project name, this will prepended to containers names.
   COMPOSE_PROJECT_NAME={{cops_mailer_composename}}
   # Default password scheme used for newly created accounts and changed passwords
@@ -197,6 +196,13 @@ cops_mailer_dotenv: |-
   OUTIP={{cops_mailer_out_ip}}
   MAILU_VERSION={{cops_mailer_mailu_version}}
   VERSION={{cops_mailer_mailu_version}}
+  # extra settings needed in docker-compose main file
+  ANTISPAM_ADDRESS={{cops_mailer_antispam_milter_address}}
+  ANTISPAM_MILTER_ADDRESS={{cops_mailer_antispam_milter_address}}
+  # retrocompat
+  HOST_ANTISPAM={{cops_mailer_antispam_milter_address}}
+  HOST_ANTISPAM_CLIENT={{cops_mailer_antispam_client_address}}
+  LMTP_ADDRESS={{cops_mailer_lmtp_address}}
 cops_mailer_dotenv_extra: ""
 # free form for params inside dockerenv
 cops_mailer_docker_env_extra: ""

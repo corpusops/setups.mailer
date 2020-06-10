@@ -21,17 +21,15 @@
     mode: "0640"
     trim_blocks: false
 - template:
+    src: ".env"
+    dest: "{{cops_mailer_dir}}/.env"
+    mode: "0640"
+    trim_blocks: false
+- template:
     src: "docker.env"
     dest: "{{cops_mailer_dir}}/docker.env"
     mode: "0640"
     trim_blocks: false
-- blockinfile:
-    create: true
-    path: "{{cops_mailer_dir}}/.env"
-    content: |-
-      {{cops_mailer_dotenv}}
-      {{cops_mailer_dotenv_extra}}
-    marker: "# ANSIBLE MANAGED BLOCK :: deploy commit :: {mark}"
 
 - name: Create directories
   file:
