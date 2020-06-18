@@ -73,7 +73,7 @@ cops_mailer_docker_env_defaults: |-
   # Hostnames for this server, separated with comas
   HOSTNAMES={{cops_mailer_mail_domain}},{{cops_mailer_hostname}}
   # Postmaster local part (will append the main mail domain)
-  POSTMASTER={{cops_mailer_postmaster}}
+  POSTMASTER={{cops_mailer_postmaster.split('@')[0]}}
   # Choose how secure connections will behave (value: letsencrypt, cert, notls, mail, mail-letsencrypt)
   TLS_FLAVOR={{cops_mailer_tls_flavor}}
   # Authentication rate limit (per source IP address)
@@ -268,6 +268,9 @@ cops_mailer_postfix_mynetworks_map: ""
 cops_mailer_postfix_esmtp_access_default: |-
   0.0.0.0/0           silent-discard, dsn
   ::/0                silent-discard, dsn
+cops_mailer_sentry_dests: [
+"sysadmin+sentry@{{cops_mailer_tld_domain}}"
+]
 cops_mailer_postfix_esmtp_access: |-
   {{cops_mailer_postfix_esmtp_access_default}}
 cops_mailer_postfix_smtp_header_checks_map: |-
@@ -284,6 +287,8 @@ cops_mailer_postfix_smtp_header_checks_map: |-
   /^\s*x-mailer:/                      IGNORE
   /^\s*x-pgp-agent:/                   IGNORE
   /^\s*(mime-version:\s*[0-9\.]+)\s.+/ REPLACE $1
+  /^\s*(X-Sieve|Auto-Submitted|X-Bm-Milter-Handled|X-Bm-Transport-Timestamp):.+/  IGNORE
+  /^\s*x-cops-outspam-.*:/ IGNORE
 cops_mailer_postmaster: "postmaster@{{cops_mailer_tld_domain}}"
 cops_mailer_postfix_milter_header_checks_map_extra: ""
 cops_mailer_postfix_milter_header_checks_map_default: |-

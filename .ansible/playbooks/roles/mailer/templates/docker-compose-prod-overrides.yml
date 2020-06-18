@@ -21,7 +21,16 @@ services:
     - "993:993"
     - "995:995"
     {% else %}
-    {% for i in cops_mailer_out_ips %}
+    - "${OUTIP}:80:80"
+    - "${OUTIP}:443:443"
+    - "${OUTIP}:25:25"
+    - "${OUTIP}:110:110"
+    - "${OUTIP}:143:143"
+    - "${OUTIP}:465:465"
+    - "${OUTIP}:587:587"
+    - "${OUTIP}:993:993"
+    - "${OUTIP}:995:995"
+    {% for i in cops_mailer_out_ips[1:] %}
     - "{{i}}:80:80"
     - "{{i}}:443:443"
     - "{{i}}:25:25"
