@@ -57,7 +57,7 @@ reconf['testspam'] = {
 -- we add a flag that will be catched by postfix header_filters routing to
 -- redirect outgoing spam to a specific address for further manual processing by sysadmins
 local cusourdomains = {
-  rspamd_regexp.create_cached('/[a-zA-Z0-9_.+-]+@{{cops_mailer_ourdomains.replace('\\', '')}}/im'),
+  rspamd_regexp.create_cached('/[a-zA-Z0-9_.+-]+@{{cops_mailer_rspamdourdomains.replace('\\', '')}}/im'),
 };
 local cusourdomainswhitelistdest = {
 {% for i in cops_mailer_sentry_dests%}

@@ -178,11 +178,18 @@ cops_mailer_docker_env_defaults: |-
   # SMTP CCONTAINER CONFIGURATION
   MAILLOGSIZE={{cops_mailer_maillogsize}}
   MAILLOGS_KEEP={{cops_mailer_maillogs_keep}}
-  HOST_ANTISPAM_CLIENT=antispam:11334
+  ANTISPAM_MILTER_ADDRESS={{cops_mailer_antispam_milter_address}}
+  # retrocompat
+  HOST_ANTISPAM={{cops_mailer_antispam_milter_address}}
+  HOST_ANTISPAM_CLIENT={{cops_mailer_antispam_client_address}}
+  LMTP_ADDRESS={{cops_mailer_lmtp_address}}
   SPAMLEARN_MINUTES={{cops_mailer_spamlearn_minutes}}
   SPAMLEARN_PERIODICITY={{cops_mailer_spamlearn_periodicity}}
   SPAM_SKIP_GET={{cops_mailer_spam_skip_get}}
 # set to 1 if you have no spam/ham source to get stuff from
+cops_mailer_antispam_milter_address: antispam:11332
+cops_mailer_antispam_client_address: antispam:11334
+cops_mailer_lmtp_address: imap:2525
 cops_mailer_spam_skip_get: ""
 # free form for params inside dockerenv
 cops_mailer_dotenv: |-
