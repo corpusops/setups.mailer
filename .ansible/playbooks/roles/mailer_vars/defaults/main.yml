@@ -178,6 +178,7 @@ cops_mailer_docker_env_defaults: |-
   # SMTP CCONTAINER CONFIGURATION
   MAILLOGSIZE={{cops_mailer_maillogsize}}
   MAILLOGS_KEEP={{cops_mailer_maillogs_keep}}
+  ANTISPAM_ADDRESS={{cops_mailer_antispam_milter_address}}
   ANTISPAM_MILTER_ADDRESS={{cops_mailer_antispam_milter_address}}
   # retrocompat
   HOST_ANTISPAM={{cops_mailer_antispam_milter_address}}

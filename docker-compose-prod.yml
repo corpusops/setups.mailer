@@ -19,6 +19,11 @@ services:
   front:
     <<: [ *logging-opts, *env ]
     # in overrides
+    environment:
+    # for now mailu "front" container does not refer
+    # to same "HOST_ANTISPAM" (* 32 and *34 port)
+    - ANTISPAM_ADDRESS=$HOST_ANTISPAM_CLIENT
+    - HOST_ANTISPAM=$HOST_ANTISPAM_CLIENT
     ports: []
     volumes:
     - "certs:/certs"
