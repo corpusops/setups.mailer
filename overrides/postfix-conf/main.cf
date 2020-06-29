@@ -89,10 +89,11 @@ relay_transport   = smtp:
 
 
 # Sender and recipient canonical maps, mostly for SRS
-sender_canonical_maps = ${podop}sendermap
-sender_canonical_classes = envelope_sender
-recipient_canonical_maps = hash:/etc/postfix/recipient_canonical.map, ${podop}recipientmap
-recipient_canonical_classes= envelope_recipient,header_recipient
+# sender_canonical_maps = ${podop}sendermap
+# sender_canonical_classes = envelope_sender
+# recipient_canonical_maps = hash:/etc/postfix/recipient_canonical.map, ${podop}recipientmap
+# recipient_canonical_classes= envelope_recipient,header_recipient
+recipient_canonical_maps = hash:/etc/postfix/recipient_canonical.map
 
 
 
