@@ -353,21 +353,5 @@ cops_mailer_rspamd_disabled_symbols_default_low: [
   "SURBL_ZEN_SPAMHAUS_ORG",
 ]
 cops_mailer_rspamd_disabled_symbols_default: [
-  "ASN_CHECK",
-  "DWL_DNSWL",
-  "IP_SCORE",
-  "MAILSPIKE",
-  "RBL_BLOCKLISTDE",
-  "RBL_NIXSPAM",
-  "RBL_SEM",
-  "RBL_SENDERSCORE",
-  "RBL_SPAMHAUS",
-  "RBL_VIRUSFREE_UNKNOWN",
-  "RCVD_IN_DNSWL",
-  "SURBL_DBL_SPAMHAUS_ORG",
-  "SURBL_MULTI_SURBL_ORG",
-  "SURBL_MULTI_URIBL_COM",
-  "SURBL_URIBL_RSPAMD_COM",
-  "SURBL_URIBL_SPAMEATINGMONKEY_NET",
-  "SURBL_ZEN_SPAMHAUS_ORG",
+  "REPLIES_CHECK",
 ]
