@@ -34,7 +34,6 @@ services:
     depends_on: [front, resolver]
   antispam-feeder:
     <<: [ *antispam ]
-  antivirus:
   # Optional services
   antivirus:
     image: ${DOCKER_ORG:-mailu}/${DOCKER_PREFIX:-}clamav:${MAILU_VERSION:-1.7}
