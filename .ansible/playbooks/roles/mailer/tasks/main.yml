@@ -93,6 +93,7 @@
     done
     if [ "x$ret" != "x0" ];then echo "{{i}}: failed restart";exit 1;fi
     {% endfor %}
+    {{cops_mailer_dc}} up -d --no-deps --remove-orphans --force-recreate {{cops_mailer_restarted_services2}}
 - shell: |
     set -ex
     cd "{{cops_mailer_dir}}"

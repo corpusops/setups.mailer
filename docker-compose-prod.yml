@@ -70,6 +70,11 @@ services:
       && find /overrides -type f | while read f;do
         frep --overwrite "$$f:/etc/postfix/overrides/$$(basename $$f)";
       done
+      && rsyslogd -v >/dev/null 2>&1 || ( apk update && apk add rsyslog )
+      && echo '*.* @syslog' >> /etc/rsyslog.conf
+      && if ! ( grep -q  "rsyslogd -n" /start.py );then
+        sed -i -re 's/(os.system\("postfix start-fg"\))/os.system("rsyslogd -n \&");\1/g' /start.py;
+      fi
       && exec /start.py
     environment:
       HOST_ANTISPAM: antispam:11332
@@ -126,6 +131,31 @@ services:
     <<: [ *env ]
     volumes:
     - "postgres:/var/lib/postgresql/data"
+  syslog:
+    <<: [ *env ]
+    image: corpusops/ubuntu-bare:latest
+    environment:
+    - SUPERVISORD_CONFIGS=/etc/supervisor.d/cron /etc/supervisor.d/rsyslog
+    - TZ=${TZ:-Europe/Paris}
+    - TIMEZONE=${TZ:-Europe/Paris}
+    command:
+    - /bin/sh
+    - "-exc"
+    - >-
+      : "configure rsyslog & logrotate"
+      && rm -f /etc/rsyslog.d/*conf
+      && sed -i -re "/\/var\/log\/(messages|mail)/d" /etc/logrotate*/rsyslog
+      && for i in /etc/logrotate.d/mail.conf;do
+        frep /conf/$$i:$$i --overwrite;
+      done
+      && cp -vf /etc/rsyslog.d/50-net.conf.sample /etc/rsyslog.d/50-net.conf
+      && if ! ( egrep -iq 'includeconf' /etc/rsyslog.conf.frep );then
+        echo '$$IncludeConfig /etc/rsyslog.d/*.conf' >> /etc/rsyslog.conf.frep;
+      fi
+      && exec /bin/supervisord.sh
+    volumes:
+    - ./overrides/rsyslog/conf/:/conf/
+    - syslog:/var/log
 volumes:
   admin:
   antispam-redis:
@@ -139,4 +169,5 @@ volumes:
   queue:
   redis:
   smtplogs:
+  syslog:
   webmail:

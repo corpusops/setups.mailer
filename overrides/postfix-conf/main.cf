@@ -3,7 +3,8 @@
 ###############
 
 # Logging configuration
-maillog_file = /dev/stdout
+# back to remote syslog
+# maillog_file = /dev/stdout
 
 
 # Main domain and hostname

@@ -16,7 +16,9 @@ cops_mailer_db_password: "secret4gzQNe3c8851VOJ"
 cops_mailer_db_name: "{{cops_mailer_name}}"
 cops_mailer_build_args: ""
 # backup could be remove in a-while when we have redeployed it everywhere
-cops_mailer_restarted_services_default: "database redis antispam-redis resolver imap smtp-configure-source-ip smtp antispam antivirus webmail admin front antispam-feeder"
+cops_mailer_restarted_services2_default: "front admin smtp antispam"
+cops_mailer_restarted_services2: "{{cops_mailer_restarted_services2_default}}"
+cops_mailer_restarted_services_default: "database syslog redis antispam-redis resolver imap smtp-configure-source-ip smtp antispam antivirus webmail admin front antispam-feeder"
 cops_mailer_restarted_services: "{{cops_mailer_restarted_services_default}}"
 cops_mailer_purge_volumes: []
 cops_mailer_sshargs: >-

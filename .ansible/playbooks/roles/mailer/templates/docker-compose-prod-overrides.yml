@@ -60,6 +60,8 @@ services:
     <<: [ *dns ]
   webmail:
     <<: [ *dns ]
+  syslog:
+    <<: [ *dns ]
 networks:
   default:
     ipam:
