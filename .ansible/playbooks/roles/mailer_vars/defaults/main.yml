@@ -357,3 +357,6 @@ cops_mailer_rspamd_disabled_symbols_default_low: [
 cops_mailer_rspamd_disabled_symbols_default: [
   "REPLIES_CHECK",
 ]
+cops_mailer_postfix_smtp_whitelisted_senders: |-
+  # /white@listed/ ok
+
