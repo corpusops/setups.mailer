@@ -12,5 +12,5 @@
        postrotate
            /usr/sbin/postfix reload
        endscript
-       su root adm
+       su root root
 }
