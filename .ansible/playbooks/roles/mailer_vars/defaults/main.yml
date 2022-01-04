@@ -12,8 +12,9 @@ cops_mailer_ourdomains_list_default: [
   "{{cops_mailer_tld_domain}}",
   "{{cops_mailer_hostname}}"]
 cops_mailer_ourdomains_list: "{{cops_mailer_ourdomains_list_default}}"
-cops_mailer_ourdomains_default: "{{cops_mailer_ourdomains_list|join('|')}}"
+cops_mailer_ourdomains_default: "^({{cops_mailer_ourdomains_list|join('|')}})$"
 cops_mailer_ourdomains: "{{cops_mailer_ourdomains_default}}"
+cops_mailer_ourdomains_lax: "{{cops_mailer_ourdomains[1:-1]}}"
 cops_mailer_rspamdourdomains: "{{cops_mailer_ourdomains_default}}"
 cops_mailer_alternate_hostnames: [".{{cops_mailer_tld_domain}}"]
 cops_mailer_db_user: mailu
