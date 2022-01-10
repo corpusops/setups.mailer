@@ -65,6 +65,7 @@
   delay: 10
   when:
   - "cops_mailer_pull|copsf_asbool"
+  tags: [service]
 - include_role: {name: corpusops.roles/docker_compose_service}
   vars:
     _docker_compose_service:
@@ -94,6 +95,7 @@
     if [ "x$ret" != "x0" ];then echo "{{i}}: failed restart";exit 1;fi
     {% endfor %}
     {{cops_mailer_dc}} up -d --no-deps --remove-orphans --force-recreate {{cops_mailer_restarted_services2}}
+  tags: [restart]
 - shell: |
     set -ex
     cd "{{cops_mailer_dir}}"
@@ -104,3 +106,4 @@
   delay: 1
   register: restarted_docker_services
   until: "restarted_docker_services.rc == 0"
+  tags: [restart]
