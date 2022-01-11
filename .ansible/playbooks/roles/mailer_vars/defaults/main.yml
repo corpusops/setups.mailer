@@ -243,7 +243,6 @@ cops_mailer_relayhost: ""
 cops_mailer_webmail: rainloop
 cops_mailer_ratelimit: "100/minute;10000/hour"
 cops_mailer_tls_flavor: "letsencrypt"
-cops_mailer_postmaster: admin
 cops_mailer_mailu_version: "1.7"
 cops_mailer_secret_key: supersecret123456789
 cops_mailer_out_ips: ["{{ansible_default_ipv4.address}}"]
