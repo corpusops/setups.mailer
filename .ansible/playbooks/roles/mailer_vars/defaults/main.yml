@@ -7,7 +7,12 @@ cops_mailer_composename: "{{cops_mailer_name}}"
 cops_mailer_tld_domain: example.com
 cops_mailer_mail_domain: "antispam.{{ cops_mailer_tld_domain }}"
 cops_mailer_hostname: "mx.{{cops_mailer_mail_domain}}"
-cops_mailer_ourdomains_default: "({{cops_mailer_mail_domain}}|{{cops_mailer_tld_domain}}|{{cops_mailer_hostname}})"
+cops_mailer_ourdomains_list_default: [
+  "{{cops_mailer_mail_domain}}",
+  "{{cops_mailer_tld_domain}}",
+  "{{cops_mailer_hostname}}"]
+cops_mailer_ourdomains_list: "{{cops_mailer_ourdomains_list_default}}"
+cops_mailer_ourdomains_default: "{{cops_mailer_ourdomains_list|join('|')}}"
 cops_mailer_ourdomains: "{{cops_mailer_ourdomains_default}}"
 cops_mailer_rspamdourdomains: "{{cops_mailer_ourdomains_default}}"
 cops_mailer_alternate_hostnames: [".{{cops_mailer_tld_domain}}"]
@@ -80,6 +85,7 @@ cops_mailer_docker_env_defaults: |-
   TLS_FLAVOR={{cops_mailer_tls_flavor}}
   # Authentication rate limit (per source IP address)
   AUTH_RATELIMIT={{cops_mailer_ratelimit}}
+  MESSAGE_RATELIMIT={{cops_mailer_message_ratelimit}}
   # Opt-out of statistics, replace with "True" to opt out
   DISABLE_STATISTICS={{cops_mailer_disable_statistics}}
   ###################################
@@ -188,6 +194,10 @@ cops_mailer_docker_env_defaults: |-
   SPAMLEARN_MINUTES={{cops_mailer_spamlearn_minutes}}
   SPAMLEARN_PERIODICITY={{cops_mailer_spamlearn_periodicity}}
   SPAM_SKIP_GET={{cops_mailer_spam_skip_get}}
+  # IMAP full-text search is enabled by default. Set the following variable to off in order to disable the feature.
+  FULL_TEXT_SEARCH={{cops_mailer_antispam_imapfulltextsearch}}
+cops_mailer_antispam_imapfulltextsearch: "off"
+cops_mailer_message_ratelimit: "100000/hour"
 # set to 1 if you have no spam/ham source to get stuff from
 cops_mailer_antispam_milter_address: antispam:11332
 cops_mailer_antispam_client_address: antispam:11334
@@ -241,7 +251,7 @@ cops_mailer_message_size_limit: "210240000"
 cops_mailer_relaynets: ""
 cops_mailer_relayhost: ""
 cops_mailer_webmail: rainloop
-cops_mailer_ratelimit: "100/minute;10000/hour"
+cops_mailer_ratelimit: "100/minute{% if cops_mailer_mailu_version| version_compare('1.7', '<=')%};10000/hour{%endif%}"
 cops_mailer_tls_flavor: "letsencrypt"
 cops_mailer_mailu_version: "1.7"
 cops_mailer_secret_key: supersecret123456789
@@ -279,10 +289,22 @@ cops_mailer_postfix_sender_transport_map: ""
 cops_mailer_postfix_relay_domains_map: ""
 cops_mailer_postfix_recipient_canonical_map: ""
 cops_mailer_postfix_recipient_access_map: ""
-cops_mailer_postfix_mynetworks_map: ""
+cops_mailer_whitelisted_ips: []
+cops_mailer_postfix_mynetworks_map: |-
+  # localhost
+  127.0.0.0/8
+  {% for i in cops_mailer_whitelisted_ips %}
+  {{ i }} OK
+  {% endfor %}
 cops_mailer_postfix_esmtp_access_default: |-
-  0.0.0.0/0           silent-discard, dsn
-  ::/0                silent-discard, dsn
+  {% for i in cops_mailer_postfix_mynetworks_map.splitlines()%}
+  {% if not i.startswith('#') and (' ok' in i.lower()) %}
+  {{i.split()[0]}} silent-discard
+  {% endif %}
+  {% endfor %}
+  {{cops_mailer_subnetp}} silent-discard
+  0.0.0.0/0           silent-discard
+  ::/0                silent-discard
 cops_mailer_sentry_dests: [
 "sysadmin+sentry@{{cops_mailer_tld_domain}}"
 ]

@@ -1,11 +1,12 @@
 # service type  private unpriv  chroot  wakeup  maxproc command + args
 #               (yes)   (yes)   (yes)   (never) (100)
+{{"{%"}} set verbose = ("debug" in (LOG_LEVEL|default("")).lower()) and " -v" or "" %}
 
 # Exposed SMTP service
-smtp      inet  n       -       n       -       -       smtpd
+smtp      inet  n       -       n       -       -       smtpd{{"{{"}}verbose}}
 
 # Internal SMTP service
-10025     inet  n       -       n       -       -       smtpd
+10025     inet  n       -       n       -       -       smtpd{{"{{"}}verbose}}
   -o smtpd_sasl_auth_enable=yes
   -o smtpd_client_restrictions=reject_unlisted_sender,reject_authenticated_sender_login_mismatch,permit
   -o smtpd_reject_unlisted_recipient={{'{%'}} if REJECT_UNLISTED_RECIPIENT %}{{'{{'}} REJECT_UNLISTED_RECIPIENT }}{{'{%'}} else %}no{{'{%'}} endif %}

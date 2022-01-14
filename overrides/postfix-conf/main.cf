@@ -56,9 +56,10 @@ tls_high_cipherlist = EDH+CAMELLIA:EDH+aRSA:EECDH+aRSA+AESGCM:EECDH+aRSA+SHA256:
 tls_preempt_cipherlist = yes
 tls_ssl_options = NO_COMPRESSION
 
-# Outgoing TLS is more flexible because 1. not all receiving servers will
-# support TLS, 2. not all will have and up-to-date TLS stack.
-smtp_tls_security_level = may
+# By default, outgoing TLS is more flexible because
+# 1. not all receiving servers will support TLS,
+# 2. not all will have and up-to-date TLS s
+smtp_tls_security_level = {{'{{'}} OUTBOUND_TLS_LEVEL|default('may') }}
 smtp_tls_mandatory_protocols = !SSLv2, !SSLv3
 smtp_tls_protocols =!SSLv2,!SSLv3
 smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
@@ -76,12 +77,12 @@ virtual_mailbox_maps = ${podop}mailbox
 
 # Mails are transported if required, then forwarded to Dovecot for delivery
 relay_domains =
-  ${podop}transport,
   regexp:/etc/postfix/overrides/relay_domains.regexp,
-  hash:/etc/postfix/relay_domains.map
+  hash:/etc/postfix/relay_domains.map,
+  ${podop}transport
 transport_maps =
-  ${podop}transport,
-  regexp:/etc/postfix/overrides/transport.regexp
+  regexp:/etc/postfix/overrides/transport.regexp,
+  ${podop}transport
 sender_dependent_default_transport_maps =
   regexp:/etc/postfix/overrides/sender_transport.regexp
 virtual_transport = lmtp:inet:{{'{{'}} LMTP_ADDRESS }}
@@ -89,13 +90,11 @@ default_transport = smtp:
 relay_transport   = smtp:
 
 
-# Sender and recipient canonical maps, mostly for SRS
-# sender_canonical_maps = ${podop}sendermap
-# sender_canonical_classes = envelope_sender
-# recipient_canonical_maps = hash:/etc/postfix/recipient_canonical.map, ${podop}recipientmap
-# recipient_canonical_classes= envelope_recipient,header_recipient
-recipient_canonical_maps = hash:/etc/postfix/recipient_canonical.map
-
+# Sender and recipient canonical maps, mostly for SRS (disabled in corpusops, we have our own rules)
+sender_canonical_maps = ${podop}sendermap
+sender_canonical_classes = envelope_sender
+recipient_canonical_classes= envelope_recipient,header_recipient
+recipient_canonical_maps = hash:/etc/postfix/recipient_canonical.map, ${podop}recipientmap
 
 
 # In order to prevent Postfix from running DNS query, enforce the use of the
@@ -138,8 +137,8 @@ smtpd_client_restrictions =
   reject_unknown_sender_domain,
   reject_unknown_recipient_domain,
   reject_unverified_recipient,
-    reject_rbl_client cbl.abuseat.org,
-    reject_rbl_client sbl-xbl.spamhaus.org,
+  reject_rbl_client cbl.abuseat.org,
+  reject_rbl_client sbl-xbl.spamhaus.org,
   permit
 # ovh listé
 #    reject_rbl_client bl.spamcop.net,
@@ -198,3 +197,5 @@ smtp_header_checks = pcre:/etc/postfix/overrides/smtp_header_checks.regexp
 smtpd_discard_ehlo_keyword_address_maps = cidr:/etc/postfix/overrides/esmtp_access.map
 
 
+{{"{#"}} Ensure that the rendered file ends with newline in order to make `postconf` work correctly #}
+{{'{{'}}- "\n" }}

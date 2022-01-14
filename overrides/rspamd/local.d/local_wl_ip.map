@@ -1,0 +1,3 @@
+{% for i in cops_mailer_whitelisted_ips %}
+{{ i }}
+{% endfor %}
