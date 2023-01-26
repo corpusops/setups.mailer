@@ -352,6 +352,7 @@ cops_mailer_rspamd_milter_use: '[]'
 cops_mailer_rspamd_milter_extended_spam_headers: 'false'
 cops_mailer_rspamd_milter_authenticated_headers: "{{cops_mailer_rspamd_milter_use}}"
 cops_mailer_rspamd_milter_local_headers: "{{cops_mailer_rspamd_milter_use}}"
+cops_mailer_rspamd_composites_extra: ''
 cops_mailer_rspamd_milter_extra: ''
 cops_mailer_rspamd_regex_extra: ''
 cops_mailer_rspamd_redis_extra: ''
