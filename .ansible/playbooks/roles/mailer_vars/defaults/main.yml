@@ -355,10 +355,34 @@ cops_mailer_rspamd_milter_local_headers: "{{cops_mailer_rspamd_milter_use}}"
 cops_mailer_rspamd_composites_extra: ''
 cops_mailer_rspamd_milter_extra: ''
 cops_mailer_rspamd_regex_extra: ''
+cops_mailer_rspamd_surbl_conf: |-
+  rules {
+  {% for i in cops_mailer_rspamd_disabled_uribl %}
+    "{{i}}" {
+        enabled = false;
+     }
+  {% endfor %}
+  }
 cops_mailer_rspamd_redis_extra: ''
 cops_mailer_rspamd_greylist_extra: ''
 cops_mailer_rspamd_actions_extra: ''
 cops_mailer_rspamd_disabled_symbols: "{{cops_mailer_rspamd_disabled_symbols_default}}"
+cops_mailer_rspamd_disabled_uribl: [
+  "SEM_URIBL_UNKNOWN",
+  "URIBL_MULTI",
+  "SEM_URIBL_FRESH15_UNKNOWN",
+  "RSPAMD_URIBL",
+  "RSPAMD_URIBL",
+  "URIBL_GREY",
+  "URIBL_RED",
+  "SEM_URIBL_UNKNOWN",
+  "URIBL_MULTI",
+  "SEM_URIBL",
+  "URIBL_BLACK",
+  "SEM_URIBL_FRESH15_UNKNOWN",
+  "URIBL_BLOCKED",
+  "SEM_URIBL_FRESH15",
+]
 cops_mailer_rspamd_disabled_symbols_default_low: [
   "ASN_CHECK",
   "DWL_DNSWL",
