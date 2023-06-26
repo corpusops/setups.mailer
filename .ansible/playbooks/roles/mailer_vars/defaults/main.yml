@@ -39,6 +39,7 @@ cops_mailer_sshargs: >-
   {{ hostvars[inventory_hostname].ansible_ssh_common_args | default('') }}
   {{ hostvars[inventory_hostname].ansible_ssh_extra_args | default('') }}
   {% endif %}
+cops_mailer_has_srs: false
 cops_mailer_build: false
 cops_mailer_pull: true
 cops_mailer_registries: []
@@ -52,6 +53,7 @@ cops_mailer_docker_env_freeform: |-
   {{ cops_mailer_docker_env_defaults}}
   {{ cops_mailer_docker_env_extra}}
 cops_mailer_docker_env_defaults: |-
+  COMPOSE_FILE={{cops_mailer_compose_files|join(':')}}
   # Mailu main configuration file
   #
   # Generated for compose flavor

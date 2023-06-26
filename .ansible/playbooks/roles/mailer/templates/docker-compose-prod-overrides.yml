@@ -46,6 +46,16 @@ services:
     networks: {default: {ipv4_address: "{{cops_mailer_subnet_prefix}}.254"}}
   admin:
     <<: [ *dns ]
+{%- if not cops_mailer_has_srs %}
+    # HACK: disable SRS processing
+    command:
+    - sh
+    - "-exc"
+    - |-
+      set -ex
+      sed -i -re "s/ srs = srslib.SRS/ return flask.abort(404);srs = srslib.SRS/g" /app/mailu/internal/views/postfix.py || true
+      exec /start.py
+{%- endif %}
   imap:
     <<: [ *dns ]
   smtp-configure-source-ip:

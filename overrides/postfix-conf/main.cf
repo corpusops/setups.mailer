@@ -20,7 +20,7 @@ message_size_limit = {{'{{'}} MESSAGE_SIZE_LIMIT }}
 
 # Relayed networks
 # mynetworks = 127.0.0.1/32 [::1]/128 {{'{{'}} SUBNET }} {{'{{'}} RELAYNETS }}
-mynetworks = hash:/etc/postfix/mynetworks.map
+mynetworks = lmdb:/etc/postfix/mynetworks.map
 
 # Empty alias list to override the configuration variable and disable NIS
 alias_maps =
@@ -78,7 +78,7 @@ virtual_mailbox_maps = ${podop}mailbox
 # Mails are transported if required, then forwarded to Dovecot for delivery
 relay_domains =
   regexp:/etc/postfix/overrides/relay_domains.regexp,
-  hash:/etc/postfix/relay_domains.map,
+  lmdb:/etc/postfix/relay_domains.map,
   ${podop}transport
 transport_maps =
   regexp:/etc/postfix/overrides/transport.regexp,
@@ -94,7 +94,7 @@ relay_transport   = smtp:
 sender_canonical_maps = ${podop}sendermap
 sender_canonical_classes = envelope_sender
 recipient_canonical_classes= envelope_recipient,header_recipient
-recipient_canonical_maps = hash:/etc/postfix/recipient_canonical.map, ${podop}recipientmap
+recipient_canonical_maps = lmdb:/etc/postfix/recipient_canonical.map, ${podop}recipientmap
 
 
 # In order to prevent Postfix from running DNS query, enforce the use of the
